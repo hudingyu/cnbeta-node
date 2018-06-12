@@ -1,0 +1,8 @@
+# directory
+db/
+logs/
+node_modules/
+.idea/
+
+# file
+package-lock.json
