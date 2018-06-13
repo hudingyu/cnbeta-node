@@ -13,7 +13,9 @@ const cors = require('koa2-cors');
 
 
 module.exports = (app) => {
-    app.use(cors());
+    app.use(cors({
+        credentials: true,
+    }));
     app.use(bodyParser({
         enableTypes: ['json', 'form', 'text']
     }));
