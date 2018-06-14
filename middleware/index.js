@@ -11,6 +11,7 @@ const onerror = require('koa-onerror');
 const logger = require('koa-logger');
 const cors = require('koa2-cors');
 const staticFiles = require('koa-static');
+const path = require('path');
 
 module.exports = (app) => {
     app.use(cors({
