@@ -14,15 +14,23 @@
   "author": "hudingyu",
   "license": "ISC",
   "dependencies": {
+    "async": "^2.6.0",
+    "cheerio": "^1.0.0-rc.2",
+    "colors": "^1.2.5",
     "debug": "^3.1.0",
+    "iconv-lite": "^0.4.23",
     "koa": "^2.5.1",
     "koa-bodyparser": "^4.2.1",
     "koa-logger": "^3.2.0",
     "koa-onerror": "^4.0.0",
     "koa-router": "^7.4.0",
+    "koa-static": "^4.0.3",
     "koa2-cors": "^2.0.5",
+    "log4js": "^2.6.1",
     "mongoose": "^5.1.4",
-    "mongoose-paginate": "^5.0.3"
+    "mongoose-paginate": "^5.0.3",
+    "q": "^1.5.1",
+    "request": "^2.86.0"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",

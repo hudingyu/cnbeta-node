@@ -6,9 +6,45 @@
  * @license MIT
  */
 
-const article = require('../model/article');
+const {articleModel, articleDbModel} = require('../model/article');
+const logger = require('../config/log');
 
 class dbHelper {
+    static async emptyCollection(Model) {
+        let flag = true;
+        let res = await Model.collection.remove();
+        if (!res) {
+            flag = false;
+        }
+        return flag;
+    }
+
+    static async insertCollection(Model, insertList) {
+        let flag = true;
+        let res = await Model.collection.insert(insertList);
+        if (!res) {
+            flag = false;
+        }
+        return flag;
+    }
+
+    static async updateCollection(Modle, doc) {
+        let flag = true;
+        let updateRes = await Modle.update({sid: doc.sid}, doc);
+        if (!updateRes) {
+            logger.error('保存文章内容出错，文章sid：' + doc.sid);
+            flag = false;
+        }
+        return flag;
+    }
+
+    static async queryDocList(Model) {
+        const list  = await Model.find({content: {$exists: false}}).catch((err) => {
+            logger.error('查询文章列表出错');
+            logger.error(err);
+        });
+        return list;
+    }
     static async queryArticleList(params) {
         const {
             select,
@@ -16,7 +52,7 @@ class dbHelper {
             page
         } = params;
         let res = null;
-        await article.paginate({}, {
+        await articleDbModel.paginate({}, {
             select: select,
             page: page,
             limit: size,
@@ -47,7 +83,7 @@ class dbHelper {
             sid
         } = params;
         let res = null;
-        await article.find({sid: sid}, (err, doc) => {
+        await articleDbModel.find({sid: sid}, (err, doc) => {
             if (!err) {
                 res = doc;
             }

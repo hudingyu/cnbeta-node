@@ -10,7 +10,7 @@ const dbHelper = require('../dbhelper/dbhelper');
 const {
     handleError,
     handleSuccess
-} = require('../utils/utils');
+} = require('../utils/handle');
 
 module.exports.articlelist = async(ctx, next) => {
     console.log('start query');
