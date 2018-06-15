@@ -15,8 +15,8 @@ const mongoosePaginate = require('mongoose-paginate');
 const config = require('../config/dbconf');
 mongoose.Promise = global.Promise;
 
-var db=mongoose.connect(`mongodb://hudingyu:hudy320123!@${config.originIp}:${config.localPort}/${config.db.articlelist}`);
-// var db = mongoose.connect(`mongodb://${config.localUrl}:${config.localPort}/${config.db.articlelist}`);
+// var db=mongoose.connect(`mongodb://hudingyu:hudy320123!@${config.originIp}:${config.localPort}/${config.db.articlelist}`);
+var db = mongoose.connect(`mongodb://${config.localUrl}:${config.localPort}/${config.db.articlelist}`);
 
 mongoose.connection.on("error", function (error) {
     console.log("database connnecting failed：" + error);

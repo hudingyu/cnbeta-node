@@ -66,8 +66,7 @@ const getArticleList = (pageUrlList) => {
                 return;
             }
             let articleList = _.flatten(result);
-            downloadThumb(articleList);
-            saveDB(articleList, resolve);
+            downloadThumbAndSave(articleList);
         })
     })
 };
@@ -104,13 +103,15 @@ const getCurPage = async(pageUrl, callback) => {
     });
 };
 
-const downloadThumb = (list) => {
+const downloadThumbAndSave = (list, resolve) => {
     const host = 'https://static.cnbetacdn.com';
     const basepath = './public/data';
+    if (!list || !list.length) {
+        return;
+    }
     async.eachSeries(list, (item, callback) => {
         let thumb_url = item.thumb.replace(host, '');
         item.thumb = thumb_url;
-        // console.log(thumb_url.substring(0, thumb_url.lastIndexOf('/')));
         mkDirs(basepath + thumb_url.substring(0, thumb_url.lastIndexOf('/')), () => {
             // request(img_src).pipe(fs.createWriteStream('./'+ img_filename));
             console.log(host + thumb_url);
@@ -118,8 +119,13 @@ const downloadThumb = (list) => {
             request(host + thumb_url).pipe(fs.createWriteStream(path.join(basepath, thumb_url)));
             callback(null, null);
         });
+    }, (err, result) => {
+        console.log('开始保存');
+        if (!err) {
+            saveDB(list, resolve);
+        }
     });
-}
+};
 
 /**
  * 将文章列表存入数据库
