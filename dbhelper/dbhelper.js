@@ -82,12 +82,12 @@ class dbHelper {
         const {
             sid
         } = params;
-        let res = articleDbModel.find({sid: sid}, (err, doc) => {
+        let res = await articleDbModel.find({sid: sid}, (err, doc) => {
             if (err) {
                 console.log(err);
             }
         });
-        if (!res.sid) res = null;
+        if (!res[0].sid) res = null;
         return res;
     }
 }
