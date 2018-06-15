@@ -120,7 +120,6 @@ const downloadThumbAndSave = (list, resolve) => {
             callback(null, null);
         });
     }, (err, result) => {
-        console.log('开始保存');
         if (!err) {
             saveDB(list, resolve);
         }

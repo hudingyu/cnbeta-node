@@ -17,7 +17,7 @@ module.exports = (app) => {
     app.use(cors({
         credentials: true,
     }));
-    app.use(staticFiles(path.resolve(__dirname, "./public")))
+    app.use(staticFiles(path.resolve(__dirname, "../public")));
     app.use(bodyParser({
         enableTypes: ['json', 'form', 'text']
     }));
