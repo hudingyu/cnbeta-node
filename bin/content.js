@@ -100,11 +100,12 @@ const getArticleContent = async(sid, callback) => {
             decodeEntities: false
         });
         const serverAssetPath = 'http://10.4.226.82:8081/data';
+        let domainReg = new RegExp('https://static.cnbetacdn.com','g');
         let article = {
             sid,
             source: $('.article-byline span a').html() || $('.article-byline span').html(),
             summary: $('.article-summ p').html(),
-            content: $('.articleCont').html().replace(styleReg.reg, styleReg.replace).replace(scriptReg.reg, scriptReg.replace).replace('https://static.cnbetacdn.com', serverAssetPath),
+            content: $('.articleCont').html().replace(styleReg.reg, styleReg.replace).replace(scriptReg.reg, scriptReg.replace).replace(domainReg, serverAssetPath),
         };
         saveContentToDB(article);
         let imgList = [];
