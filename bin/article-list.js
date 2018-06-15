@@ -116,7 +116,15 @@ const downloadThumbAndSave = (list, resolve) => {
                 if (!fs.exists(thumb_url)) {
                     mkDirs(basepath + thumb_url.substring(0, thumb_url.lastIndexOf('/')), () => {
                         // console.log(path.join(basepath, thumb_url));
-                        request(host + thumb_url).pipe(fs.createWriteStream(path.join(basepath, thumb_url)));
+                        // request(host + thumb_url).pipe(fs.createWriteStream(path.join(basepath, thumb_url)));
+                        request
+                            .get({
+                                url: host + thumb_url,
+                            })
+                            .pipe(fs.createWriteStream(path.join(basepath, thumb_url)))
+                            .on('error', (err) => {
+                                console.log("pipe error", err);
+                            });
                         callback(null, null);
                     });
                 }
