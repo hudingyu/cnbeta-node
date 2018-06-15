@@ -12,7 +12,6 @@ const logger = require('../config/log');
 
 const start = async() => {
     let articleListRes = await articleListInit();
-    // console.log(articleListRes);
     if (!articleListRes) {
         logger.warn('news list update failed...');
     } else {

@@ -66,7 +66,7 @@ const getArticleList = (pageUrlList) => {
                 return;
             }
             let articleList = _.flatten(result);
-            downloadThumbAndSave(articleList);
+            downloadThumbAndSave(articleList, resolve);
         })
     })
 };
@@ -113,10 +113,12 @@ const downloadThumbAndSave = (list, resolve) => {
         let thumb_url = item.thumb.replace(host, '');
         item.thumb = thumb_url;
         mkDirs(basepath + thumb_url.substring(0, thumb_url.lastIndexOf('/')), () => {
-            // request(img_src).pipe(fs.createWriteStream('./'+ img_filename));
-            console.log(host + thumb_url);
-            // console.log(host + thumb_url);
-            request(host + thumb_url).pipe(fs.createWriteStream(path.join(basepath, thumb_url)));
+            try {
+                request(host + thumb_url).pipe(fs.createWriteStream(path.join(basepath, thumb_url)));
+            }
+            catch(err) {
+                console.log(err);
+            }
             callback(null, null);
         });
     }, (err, result) => {
