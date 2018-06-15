@@ -113,24 +113,18 @@ const downloadThumbAndSave = (list, resolve) => {
             async.eachSeries(list, (item, callback) => {
                 let thumb_url = item.thumb.replace(host, '');
                 item.thumb = thumb_url;
-                // if (!fs.exists(thumb_url)) {
-                //     mkDirs(basepath + thumb_url.substring(0, thumb_url.lastIndexOf('/')), () => {
-                //         console.log(path.join(basepath, thumb_url));
-                //         try {
-                //             request(host + thumb_url).pipe(fs.createWriteStream(path.join(basepath, thumb_url)));
-                //         }
-                //         catch(err) {
-                //             console.log(err);
-                //         }
-                //         callback(null, null);
-                //     });
-                // }
-                mkDirs(basepath + thumb_url.substring(0, thumb_url.lastIndexOf('/')), () => {
-                    console.log(path.join(basepath, thumb_url));
-
-                    request(host + thumb_url).pipe(fs.createWriteStream(path.join(basepath, thumb_url)));
-                    callback(null, null);
-                });
+                if (!fs.exists(thumb_url)) {
+                    mkDirs(basepath + thumb_url.substring(0, thumb_url.lastIndexOf('/')), () => {
+                        // console.log(path.join(basepath, thumb_url));
+                        request(host + thumb_url).pipe(fs.createWriteStream(path.join(basepath, thumb_url)));
+                        callback(null, null);
+                    });
+                }
+                // mkDirs(basepath + thumb_url.substring(0, thumb_url.lastIndexOf('/')), () => {
+                //     // console.log(path.join(basepath, thumb_url));
+                //     request(host + thumb_url).pipe(fs.createWriteStream(path.join(basepath, thumb_url)));
+                //     callback(null, null);
+                // });
             }, (err, result) => {
                 if (!err) {
                     saveDB(list, resolve);

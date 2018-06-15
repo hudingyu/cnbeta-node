@@ -14,6 +14,7 @@ const cheerio = require('cheerio');
 const fs = require('fs');
 const async = require('async');
 const logger = require('../config/log');
+const path = require('path');
 
 const {
     website,
@@ -29,6 +30,7 @@ const {
     sleep,
     styleReg,
     scriptReg,
+    mkDirs,
 } = require('../utils/utils');
 
 /**
@@ -97,17 +99,57 @@ const getArticleContent = async(sid, callback) => {
         const $ = cheerio.load(body, {
             decodeEntities: false
         });
+        const serverAssetPath = 'http://10.4.226.82:8081/data';
         let article = {
             sid,
             source: $('.article-byline span a').html() || $('.article-byline span').html(),
             summary: $('.article-summ p').html(),
-            content: $('.articleCont').html().replace(styleReg.reg, styleReg.replace).replace(scriptReg.reg, scriptReg.replace),
+            content: $('.articleCont').html().replace(styleReg.reg, styleReg.replace).replace(scriptReg.reg, scriptReg.replace).replace('https://static.cnbetacdn.com', serverAssetPath),
         };
         saveContentToDB(article);
+        let imgList = [];
+        $('.articleCont img').each((index, dom) => {
+            // console.log($(this));
+            imgList.push(dom.attribs.src);
+        });
+        console.log(imgList);
+        downloadImgs(imgList);
         callback(null, null);
     });
 };
 
+/**
+ * 下载图片
+ * @param list
+ */
+const downloadImgs = (list) => {
+    const host = 'https://static.cnbetacdn.com';
+    const basepath = './public/data';
+    if (!list.length) {
+        return;
+    }
+    try {
+        async.eachSeries(list, (item, callback) => {
+            if (item.indexOf(host) === -1) return;
+            let thumb_url = item.replace(host, '');
+            item.thumb = thumb_url;
+            if (!fs.exists(thumb_url)) {
+                mkDirs(basepath + thumb_url.substring(0, thumb_url.lastIndexOf('/')), () => {
+                    try {
+                        request(host + thumb_url).pipe(fs.createWriteStream(path.join(basepath, thumb_url)));
+                        callback(null, null);
+                    }
+                    catch(err) {
+                        console.log(err);
+                    }
+                });
+            }
+        });
+    }
+    catch(err) {
+        console.log(err);
+    }
+};
 /**
  * 保存到文章内容到数据库
  * @param article
