@@ -17,6 +17,7 @@ const path = require('path');
 const async = require('async');
 const logger = require('../config/log');
 const _ = require('lodash');
+const https = require('https');
 
 const {
     website,
@@ -111,20 +112,35 @@ const downloadThumbAndSave = (list, resolve) => {
     } else {
         try {
             async.eachSeries(list, (item, callback) => {
+                let num = Math.random() * 500 + 500;
+                sleep(num);
                 let thumb_url = item.thumb.replace(host, '');
                 item.thumb = thumb_url;
                 if (!fs.exists(thumb_url)) {
                     mkDirs(basepath + thumb_url.substring(0, thumb_url.lastIndexOf('/')), () => {
                         // console.log(path.join(basepath, thumb_url));
-                        // request(host + thumb_url).pipe(fs.createWriteStream(path.join(basepath, thumb_url)));
-                        request
-                            .get({
-                                url: host + thumb_url,
-                            })
-                            .pipe(fs.createWriteStream(path.join(basepath, thumb_url)))
-                            .on('error', (err) => {
-                                console.log("pipe error", err);
+                        // request
+                        //     .get({
+                        //         url: host + thumb_url,
+                        //     })
+                        //     .pipe(fs.createWriteStream(path.join(basepath, thumb_url)))
+                        //     .on('error', (err) => {
+                        //         console.log("pipe error", err);
+                        //     });
+                        https.get(host + thumb_url, (res) =>{
+                            let imgData = "";
+                            res.setEncoding("binary"); //一定要设置response的编码为binary否则会下载下来的图片打不开
+                            res.on("data", function(chunk){
+                                imgData+=chunk;
                             });
+                            res.on("end", function(){
+                                fs.writeFile(path.join(basepath, thumb_url), imgData, "binary", function(err){
+                                    if(err){
+                                        console.log("down fail:" + err);
+                                    }
+                                });
+                            });
+                        });
                         callback(null, null);
                     });
                 }

@@ -15,6 +15,7 @@ const fs = require('fs');
 const async = require('async');
 const logger = require('../config/log');
 const path = require('path');
+const https = require('https');
 
 const {
     website,
@@ -110,10 +111,8 @@ const getArticleContent = async(sid, callback) => {
         saveContentToDB(article);
         let imgList = [];
         $('.articleCont img').each((index, dom) => {
-            // console.log($(this));
             imgList.push(dom.attribs.src);
         });
-        console.log(imgList);
         downloadImgs(imgList);
         callback(null, null);
     });
@@ -131,21 +130,41 @@ const downloadImgs = (list) => {
     }
     try {
         async.eachSeries(list, (item, callback) => {
+            let num = Math.random() * 500 + 500;
+            sleep(num);
             if (item.indexOf(host) === -1) return;
             let thumb_url = item.replace(host, '');
             item.thumb = thumb_url;
             if (!fs.exists(thumb_url)) {
                 mkDirs(basepath + thumb_url.substring(0, thumb_url.lastIndexOf('/')), () => {
                     try {
-                        // request(host + thumb_url).pipe(fs.createWriteStream(path.join(basepath, thumb_url)));
-                        request
-                            .get({
-                                url: host + thumb_url,
-                            })
-                            .pipe(fs.createWriteStream(path.join(basepath, thumb_url)))
-                            .on("error", (err) => {
-                                console.log("pipe error", err);
+                        // request
+                        //     .get({
+                        //         url: host + thumb_url,
+                        //     })
+                        //     .pipe(fs.createWriteStream(path.join(basepath, thumb_url)))
+                        //     .on("error", (err) => {
+                        //         console.log("pipe error", err);
+                        //     });
+                        // console.log(host + thumb_url);
+                        https.get(host + thumb_url, (res) =>{
+                            let imgData = "";
+                            res.setEncoding("binary"); //一定要设置response的编码为binary否则会下载下来的图片打不开
+                            res.on("data", function(chunk){
+                                imgData+=chunk;
                             });
+                            res.on("end", function(){
+                                // console.log('start write...');
+                                fs.writeFile(path.join(basepath, thumb_url), imgData, "binary", function(err){
+                                    if(err){
+                                        console.log("down fail:" + err);
+                                    }
+                                });
+                            });
+                            res.on("error", function(err){
+                                console.log(err);
+                            });
+                        });
                         callback(null, null);
                     }
                     catch(err) {

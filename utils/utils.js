@@ -112,4 +112,4 @@ module.exports = {
     styleReg,
     scriptReg,
     mkDirs,
-}
+};
