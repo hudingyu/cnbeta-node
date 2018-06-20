@@ -41,6 +41,7 @@ const {
 const articleContentInit = async() => {
     logger.info('grabbing article contents starts...');
     let uncachedArticleSidList = await getUncachedArticleList(articleDbModel);
+    // console.log('未缓存的文章：'+ uncachedArticleSidList.join(','));
     const res = await batchCrawlArticleContent(uncachedArticleSidList);
     if (!res) {
         logger.error('grabbing article contents went wrong...');
@@ -90,6 +91,7 @@ const batchCrawlArticleContent = (list) => {
 const getArticleContent = async(sid, callback) => {
     let num = Math.random() * 1000 + 1000;
     await sleep(num);
+    console.log('当前sid:' + sid);
     let url = contentBaseUrl + sid + '.htm';
     request(url, (err, response, body) => {
         if (err) {
