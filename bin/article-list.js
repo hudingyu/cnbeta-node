@@ -112,8 +112,8 @@ const downloadThumbAndSave = (list, resolve) => {
     } else {
         try {
             async.eachSeries(list, (item, callback) => {
-                let num = Math.random() * 500 + 500;
-                sleep(num);
+                // let num = Math.random() * 500 + 500;
+                // sleep(num);
                 let thumb_url = item.thumb.replace(host, '');
                 item.thumb = thumb_url;
                 if (!fs.exists(thumb_url)) {

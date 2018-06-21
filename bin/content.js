@@ -139,39 +139,34 @@ const downloadImgs = (list) => {
             item.thumb = thumb_url;
             if (!fs.exists(thumb_url)) {
                 mkDirs(basepath + thumb_url.substring(0, thumb_url.lastIndexOf('/')), () => {
-                    try {
-                        // request
-                        //     .get({
-                        //         url: host + thumb_url,
-                        //     })
-                        //     .pipe(fs.createWriteStream(path.join(basepath, thumb_url)))
-                        //     .on("error", (err) => {
-                        //         console.log("pipe error", err);
-                        //     });
-                        // console.log(host + thumb_url);
-                        https.get(host + thumb_url, (res) =>{
-                            let imgData = "";
-                            res.setEncoding("binary"); //一定要设置response的编码为binary否则会下载下来的图片打不开
-                            res.on("data", function(chunk){
-                                imgData+=chunk;
-                            });
-                            res.on("end", function(){
-                                // console.log('start write...');
-                                fs.writeFile(path.join(basepath, thumb_url), imgData, "binary", function(err){
-                                    if(err){
-                                        console.log("down fail:" + err);
-                                    }
-                                });
-                            });
-                            res.on("error", function(err){
-                                console.log(err);
+                    // request
+                    //     .get({
+                    //         url: host + thumb_url,
+                    //     })
+                    //     .pipe(fs.createWriteStream(path.join(basepath, thumb_url)))
+                    //     .on("error", (err) => {
+                    //         console.log("pipe error", err);
+                    //     });
+                    console.log(host + thumb_url);
+                    https.get(host + thumb_url, (res) =>{
+                        let imgData = "";
+                        res.setEncoding("binary"); //一定要设置response的编码为binary否则会下载下来的图片打不开
+                        res.on("data", function(chunk){
+                            imgData+=chunk;
+                        });
+                        res.on("end", function(){
+                            // console.log('start write...');
+                            fs.writeFile(path.join(basepath, thumb_url), imgData, "binary", function(err){
+                                if(err){
+                                    console.log("down fail:" + err);
+                                }
                             });
                         });
-                        callback(null, null);
-                    }
-                    catch(err) {
-                        console.log(err);
-                    }
+                        res.on("error", function(err){
+                            console.log(err);
+                        });
+                    });
+                    callback(null, null);
                 });
             }
         });
