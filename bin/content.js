@@ -147,7 +147,7 @@ const downloadImgs = (list) => {
                     //     .on("error", (err) => {
                     //         console.log("pipe error", err);
                     //     });
-                    // console.log(host + thumb_url);
+                    console.log(host + thumb_url);
                     https.get(host + thumb_url, (res) =>{
                         let imgData = "";
                         res.setEncoding("binary"); //一定要设置response的编码为binary否则会下载下来的图片打不开
