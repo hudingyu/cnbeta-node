@@ -27,6 +27,10 @@ function handleFile(pathName) {
 function handleDir(pathName) {
     fs.readdir(pathName, (err, files) => {
         if (!err) {
+            if (!files.length) {
+                fs.rmdirSync(pathName);
+                return;
+            }
             files.forEach(file => {
                 const stat = fs.statSync(path.join(pathName, file));
                 if (stat && stat.isDirectory()) {
