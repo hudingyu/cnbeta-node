@@ -32,3 +32,4 @@ if (typeof articleListInit === 'function') {
 setInterval(start, 600000);
 
 require('./server');
+require('./clear-expire');
