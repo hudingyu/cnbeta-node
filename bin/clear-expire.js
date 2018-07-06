@@ -9,7 +9,8 @@
 const fs = require('fs');
 const path = require('path');
 
-const basePath = '/Users/dianping/Developer/cnbeta-node/public/data/';
+// const basePath = '/Users/dianping/Developer/cnbeta-node/public/data/';
+const basePath = '/root/home/cnbeta-node/public/data/';
 const hourLength = 24;
 let expireCriticalTime = new Date(Date.now() - hourLength * 60 * 60 * 1000);
 
@@ -38,6 +39,7 @@ function handleDir(pathName) {
     });
 }
 
+console.log('clear start ......');
 handleDir(basePath);
 setInterval(function(pathName) {
     expireCriticalTime = new Date(Date.now() - hourLength * 60 * 60 * 1000);
