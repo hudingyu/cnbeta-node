@@ -21,6 +21,8 @@ const {
     website,
     listBaseUrl,
     contentBaseUrl,
+    serverIp,
+    serverPort,
     totalPage
 } = require('../config/originconf');
 
@@ -102,7 +104,7 @@ const getArticleContent = async(sid, callback) => {
         const $ = cheerio.load(body, {
             decodeEntities: false
         });
-        const serverAssetPath = 'http://10.4.226.82:8081/data';
+        const serverAssetPath = `${serverIp}:${serverPort}/data`;
         let domainReg = new RegExp('https://static.cnbetacdn.com','g');
         let article = {
             sid,
